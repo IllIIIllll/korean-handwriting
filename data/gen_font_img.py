@@ -21,12 +21,16 @@ def hex_to_kr(h):
 def get_font_name(font):
     return os.path.basename(font).split('.')[0]
 
+def normalization(data):
+    return (data - 127.5) / 127.5
+
 def font_to_img_array(uni, font):
     img = Image.new('L', (64, 64), color=255)
     draw = ImageDraw.Draw(img)
     kr = hex_to_kr(uni)
     draw.text((32, 32), kr, fill=0, anchor='mm', font=font)
-    return image.img_to_array(img, data_format='channels_last')
+    data = image.img_to_array(img, data_format='channels_last')
+    return normalization(data)
 
 def main():
     fonts = glob.glob('fonts/*.ttf')
