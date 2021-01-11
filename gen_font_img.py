@@ -4,3 +4,6 @@
 
 def dec_to_hex(n):
     return hex(n).replace('0x', '').upper()
+
+def hex_to_kr(h):
+    return chr(int(h, 16))
