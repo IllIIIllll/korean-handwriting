@@ -4,7 +4,7 @@
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import (Dense, LeakyReLU, BatchNormalization, Reshape,
-                                     Conv2DTranspose)
+                                     Conv2DTranspose, Conv2D, Dropout, Flatten)
 
 def generator():
     gen = Sequential([
@@ -49,3 +49,26 @@ def generator():
         )
     ])
     return gen
+
+def discriminator():
+    dsc = Sequential([
+        Conv2D(32, (5, 5), strides=2, padding='same', input_shape=[64, 64, 1]),
+        LeakyReLU(),
+        Dropout(0.3),
+
+        Conv2D(64, (5, 5), strides=2, padding='same'),
+        LeakyReLU(),
+        Dropout(0.3),
+
+        Conv2D(128, (5, 5), strides=2, padding='same'),
+        LeakyReLU(),
+        Dropout(0.3),
+
+        Flatten(),
+        Dense(256),
+        LeakyReLU(0.2),
+        Dropout(0.3),
+
+        Dense(1)
+    ])
+    return dsc
