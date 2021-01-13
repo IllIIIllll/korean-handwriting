@@ -2,12 +2,15 @@
 # <llllllllll@kakao.com>
 # MIT License
 
+import argparse
+
+from gan.gan import generator, discriminator
 from gan.optimizer import *
 from data.generator import *
 from data.sampling import *
 
 from tqdm import tqdm
-from tensorflow import GradientTape
+from tensorflow import random, GradientTape
 from tensorflow import train as t
 
 def train_step(gen, dsc, gen_opt, disc_opt, font_images, noise):
@@ -46,3 +49,27 @@ def train(gen, dsc, samples, bs, epochs, noise):
 
         if not (epoch + 1) % 5:
             checkpoint.save(file_prefix=checkpoint_prefix)
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--imgs', default='data/imgs/')
+    parser.add_argument('--model', default='model.h5')
+    parser.add_argument('--samples', default=None, type=int, help='font count')
+    parser.add_argument('--batch-size', type=int, default=128)
+    parser.add_argument('--epochs', type=int, default=300)
+
+    args = parser.parse_args()
+
+    samples = Sampler(args.imgs, 1101)
+    samples = samples.draw_data(args.samples)
+
+    gen = generator()
+    dsc = discriminator()
+    noise = random.normal([args.batch_size, 100])
+
+    train(gen, dsc, samples, args.batch_size, args.epochs, noise)
+
+    gen.save('models/' + args.model)
+
+if __name__ == '__main__':
+    main()
