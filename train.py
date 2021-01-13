@@ -40,6 +40,7 @@ def train(gen, dsc, samples, bs, epochs, noise):
         generator=gen,
         discriminator=dsc
     )
+    checkpoint.restore(t.latest_checkpoint(checkpoint_dir))
 
     for epoch in range(epochs):
         dataset = DataGenerator(samples)
